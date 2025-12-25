@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  OWNER
+  ADMIN
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  password  String
+  name      String?
+  phone     String?
+  role      Role     @default(CUSTOMER)
+  createdAt DateTime @default(now())
+  
+  bookings  Booking[]
+  hotels    Hotel[]   // Only relevant if OWNER
+  auditLogs AuditLog[] @relation("UserAuditLogs")
+}
+
+model Hotel {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  ownerId     String   @db.ObjectId
+  owner       User     @relation(fields: [ownerId], references: [id])
+  name        String
+  description String
+  city        String
+  address     String
+  amenities   String[]
+  images      String[]
+  isVerified  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  rooms       Room[]
+  bookings    Booking[] // Access bookings directly via Hotel
+}
+
+model Room {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  hotelId       String   @db.ObjectId
+  hotel         Hotel    @relation(fields: [hotelId], references: [id])
+  title         String
+  type          String   // Single, Double, Suite
+  pricePerNight Float
+  capacity      Int      // Guest capacity
+  inventory     Int      // Number of physical rooms of this type
+  
+  bookings      Booking[]
+}
+
+model Booking {
+  id        String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String        @db.ObjectId
+  user      User          @relation(fields: [userId], references: [id])
+  hotelId   String        @db.ObjectId
+  hotel     Hotel         @relation(fields: [hotelId], references: [id])
+  roomId    String        @db.ObjectId
+  room      Room          @relation(fields: [roomId], references: [id])
+  
+  checkIn   DateTime
+  checkOut  DateTime
+  status    BookingStatus @default(PENDING)
+  totalPrice Float
+  
+  createdAt DateTime      @default(now())
+
+  @@index([roomId, checkIn, checkOut])
+}
+
+model AuditLog {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  actor     User     @relation("UserAuditLogs", fields: [userId], references: [id])
+  action    String
+  details   String?
+  entityId  String?  // Optional ID of target entity (user/hotel/booking)
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
