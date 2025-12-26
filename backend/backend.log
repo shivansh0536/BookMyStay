@@ -483,3 +483,9 @@ Razorpay initialized with key: Key ID present
 [dotenv@17.2.3] injecting env (0) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
 Server running on port 5001
 [32m[nodemon] clean exit - waiting for changes before restart[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Razorpay initialized with key: Key ID present
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+Server running on port 5001
+[32m[nodemon] clean exit - waiting for changes before restart[39m
