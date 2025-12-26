@@ -7,7 +7,7 @@ export default function RevenueChart({ data }) {
         <div className="bg-white p-6 rounded-lg shadow border border-gray-100">
             <h3 className="text-lg font-bold text-gray-900 mb-6">Revenue Overview (Last 30 Days)</h3>
             <div className="h-80 w-full">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                     <BarChart data={data}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} />
                         <XAxis

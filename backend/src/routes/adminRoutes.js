@@ -1,5 +1,6 @@
 const express = require('express');
-const { getStats, getAllUsers, deleteUser, getAllBookings, updateUserRole, getAnalytics, getAuditLogs } = require('../controllers/adminController');
+const { getStats, getAllUsers, deleteUser, getAllBookings, updateUserRole, getAnalytics, getAuditLogs, verifyHotel } = require('../controllers/adminController');
+// ... other imports unchanged
 const { authenticateToken, authorizeRoles } = require('../middleware/authMiddleware');
 
 const router = express.Router();
@@ -14,5 +15,6 @@ router.get('/users', getAllUsers);
 router.get('/bookings', getAllBookings);
 router.patch('/users/:id/role', updateUserRole);
 router.delete('/users/:id', deleteUser);
+router.patch('/hotels/:id/verify', verifyHotel);
 
 module.exports = router;

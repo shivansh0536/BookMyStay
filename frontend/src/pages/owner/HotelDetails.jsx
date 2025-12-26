@@ -61,7 +61,7 @@ export default function OwnerHotelDetails() {
     if (!hotel) return <div>Loading...</div>;
 
     return (
-        <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="max-w-7xl mx-auto px-4 pb-8 pt-24">
             <Button variant="ghost" className="mb-4" onClick={() => navigate('/owner/dashboard')}>
                 <ArrowLeft className="h-4 w-4 mr-2" /> Back to Dashboard
             </Button>

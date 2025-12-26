@@ -4,9 +4,11 @@ import { Button } from '../components/ui/Button';
 import { User, Mail, Shield, Save } from 'lucide-react';
 
 export default function Profile() {
-    const { user, updateProfile } = useAuth();
+    const { user, updateProfile, updatePassword } = useAuth();
     const [name, setName] = useState(user?.name || '');
     const [email, setEmail] = useState(user?.email || '');
+    // Password state
+    const [passwords, setPasswords] = useState({ current: '', new: '', confirm: '' });
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
 
@@ -46,14 +48,41 @@ export default function Profile() {
         }
     };
 
+    const handleUpdatePassword = async (e) => {
+        e.preventDefault();
+        setMessage({ type: '', text: '' });
+
+        if (passwords.new !== passwords.confirm) {
+            return setMessage({ type: 'error', text: 'New passwords do not match' });
+        }
+
+        if (passwords.new.length < 6) {
+            return setMessage({ type: 'error', text: 'New password must be at least 6 characters' });
+        }
+
+        setLoading(true);
+        try {
+            await updatePassword(passwords.current, passwords.new);
+            setMessage({ type: 'success', text: 'Password updated successfully!' });
+            setPasswords({ current: '', new: '', confirm: '' }); // Clear form
+        } catch (error) {
+            setMessage({
+                type: 'error',
+                text: error.response?.data?.message || 'Failed to update password'
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
-        <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="max-w-7xl mx-auto px-4 pt-24 pb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-8">Account Settings</h1>
 
             {message.text && (
                 <div className={`p-4 rounded-lg mb-8 shadow-sm border ${message.type === 'success'
-                        ? 'bg-green-50 border-green-200 text-green-700'
-                        : 'bg-red-50 border-red-200 text-red-700'
+                    ? 'bg-green-50 border-green-200 text-green-700'
+                    : 'bg-red-50 border-red-200 text-red-700'
                     }`}>
                     <div className="flex items-center gap-2">
                         {message.type === 'success' ? <Shield className="h-5 w-5" /> : <Shield className="h-5 w-5" />}
@@ -130,6 +159,63 @@ export default function Profile() {
                         <div className="pt-2">
                             <Button type="submit" disabled={loading} className="w-full bg-purple-600 hover:bg-purple-700">
                                 {loading ? 'Updating...' : 'Update Email'}
+                            </Button>
+                        </div>
+                    </form>
+                </div>
+
+                {/* Password Change Card */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:col-span-2">
+                    <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-100">
+                        <div className="h-12 w-12 bg-red-50 rounded-full flex items-center justify-center">
+                            <Shield className="h-6 w-6 text-red-600" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-gray-900">Security</h2>
+                            <p className="text-sm text-gray-500">Update your account password</p>
+                        </div>
+                    </div>
+
+                    <form onSubmit={handleUpdatePassword} className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Current Password
+                            </label>
+                            <input
+                                type="password"
+                                value={passwords.current}
+                                onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
+                                className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 py-2.5 px-3 border"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                New Password
+                            </label>
+                            <input
+                                type="password"
+                                value={passwords.new}
+                                onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
+                                className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 py-2.5 px-3 border"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Confirm New Password
+                            </label>
+                            <input
+                                type="password"
+                                value={passwords.confirm}
+                                onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
+                                className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 py-2.5 px-3 border"
+                                required
+                            />
+                        </div>
+                        <div className="md:col-span-3">
+                            <Button type="submit" disabled={loading} className="w-full bg-red-600 hover:bg-red-700">
+                                {loading ? 'Updating Password...' : 'Change Password'}
                             </Button>
                         </div>
                     </form>

@@ -74,11 +74,11 @@ const createBooking = async (req, res) => {
                 checkIn: checkInDate,
                 checkOut: checkOutDate,
                 totalPrice,
-                status: 'CONFIRMED', // Auto-confirm for this MVP (usually would be PENDING -> Payment)
+                status: 'PENDING',
             },
         });
 
-        res.status(201).json({ message: "Booking confirmed", booking });
+        res.status(201).json({ message: "Booking created", booking });
 
     } catch (error) {
         if (error instanceof z.ZodError) {
@@ -123,4 +123,29 @@ const getOwnerBookings = async (req, res) => {
     }
 };
 
-module.exports = { createBooking, getMyBookings, getOwnerBookings };
+const cancelBooking = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.userId;
+
+        const booking = await prisma.booking.findUnique({
+            where: { id }
+        });
+
+        if (!booking) return res.status(404).json({ message: "Booking not found" });
+        if (booking.userId !== userId) return res.status(403).json({ message: "Unauthorized" });
+        if (booking.status !== 'PENDING') return res.status(400).json({ message: "Only pending bookings can be cancelled" });
+
+        const updatedBooking = await prisma.booking.update({
+            where: { id },
+            data: { status: 'CANCELLED' }
+        });
+
+        res.json({ message: "Booking cancelled successfully", booking: updatedBooking });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+module.exports = { createBooking, getMyBookings, getOwnerBookings, cancelBooking };

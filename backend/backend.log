@@ -1,0 +1,485 @@
+
+> backend@1.0.0 dev
+> nodemon src/index.js
+
+[33m[nodemon] 3.1.11[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Razorpay initialized with key: Key ID present
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+Server running on port 5001
+[32m[nodemon] clean exit - waiting for changes before restart[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+[32m[nodemon] restarting due to changes...[39m
+Razorpay initialized with key: Key ID present
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Server running on port 5001
+[32m[nodemon] starting `node src/index.js`[39m
+Razorpay initialized with key: Key ID present
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Server running on port 5001
+[32m[nodemon] clean exit - waiting for changes before restart[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Razorpay initialized with key: Key ID present
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops
+Server running on port 5001
+[32m[nodemon] clean exit - waiting for changes before restart[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Razorpay initialized with key: Key ID present
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Server running on port 5001
+
+[2025-12-26T17:36:36.374Z] POST /api/payments/create-order
+Headers: Auth header present
+
+=== CREATE ORDER REQUEST ===
+Request body: {}
+User: {
+  userId: '694cf213a887644ebc65c648',
+  role: 'CUSTOMER',
+  iat: 1766769377,
+  exp: 1767374177
+}
+===========================
+
+=== Create order error ===
+Error name: PrismaClientValidationError
+Error message: 
+Invalid `prisma.booking.findUnique()` invocation in
+/Users/shivanshupadhayay/Desktop/BookMyStay/backend/src/controllers/paymentController.js:32:46
+
+  29 const userId = req.user.userId;
+  30 
+  31 // Get booking details
+→ 32 const booking = await prisma.booking.findUnique({
+       where: {
+         id: undefined,
+     ?   AND?: BookingWhereInput | BookingWhereInput[],
+     ?   OR?: BookingWhereInput[],
+     ?   NOT?: BookingWhereInput | BookingWhereInput[],
+     ?   userId?: StringFilter | String,
+     ?   hotelId?: StringFilter | String,
+     ?   roomId?: StringFilter | String,
+     ?   checkIn?: DateTimeFilter | DateTime,
+     ?   checkOut?: DateTimeFilter | DateTime,
+     ?   status?: EnumBookingStatusFilter | BookingStatus,
+     ?   totalPrice?: FloatFilter | Float,
+     ?   paymentStatus?: EnumPaymentStatusFilter | PaymentStatus,
+     ?   razorpayOrderId?: StringNullableFilter | String | Null,
+     ?   razorpayPaymentId?: StringNullableFilter | String | Null,
+     ?   razorpaySignature?: StringNullableFilter | String | Null,
+     ?   paymentMethod?: StringNullableFilter | String | Null,
+     ?   paidAt?: DateTimeNullableFilter | DateTime | Null,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   user?: UserRelationFilter | UserWhereInput,
+     ?   hotel?: HotelRelationFilter | HotelWhereInput,
+     ?   room?: RoomRelationFilter | RoomWhereInput
+       },
+       include: {
+         hotel: true,
+         room: true,
+         user: true
+       }
+     })
+
+Argument `where` of type BookingWhereUniqueInput needs at least one of `id` arguments. Available options are marked with ?.
+Error stack: PrismaClientValidationError: 
+Invalid `prisma.booking.findUnique()` invocation in
+/Users/shivanshupadhayay/Desktop/BookMyStay/backend/src/controllers/paymentController.js:32:46
+
+  29 const userId = req.user.userId;
+  30 
+  31 // Get booking details
+→ 32 const booking = await prisma.booking.findUnique({
+       where: {
+         id: undefined,
+     ?   AND?: BookingWhereInput | BookingWhereInput[],
+     ?   OR?: BookingWhereInput[],
+     ?   NOT?: BookingWhereInput | BookingWhereInput[],
+     ?   userId?: StringFilter | String,
+     ?   hotelId?: StringFilter | String,
+     ?   roomId?: StringFilter | String,
+     ?   checkIn?: DateTimeFilter | DateTime,
+     ?   checkOut?: DateTimeFilter | DateTime,
+     ?   status?: EnumBookingStatusFilter | BookingStatus,
+     ?   totalPrice?: FloatFilter | Float,
+     ?   paymentStatus?: EnumPaymentStatusFilter | PaymentStatus,
+     ?   razorpayOrderId?: StringNullableFilter | String | Null,
+     ?   razorpayPaymentId?: StringNullableFilter | String | Null,
+     ?   razorpaySignature?: StringNullableFilter | String | Null,
+     ?   paymentMethod?: StringNullableFilter | String | Null,
+     ?   paidAt?: DateTimeNullableFilter | DateTime | Null,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   user?: UserRelationFilter | UserWhereInput,
+     ?   hotel?: HotelRelationFilter | HotelWhereInput,
+     ?   room?: RoomRelationFilter | RoomWhereInput
+       },
+       include: {
+         hotel: true,
+         room: true,
+         user: true
+       }
+     })
+
+Argument `where` of type BookingWhereUniqueInput needs at least one of `id` arguments. Available options are marked with ?.
+    at wn (/Users/shivanshupadhayay/Desktop/BookMyStay/backend/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at $n.handleRequestError (/Users/shivanshupadhayay/Desktop/BookMyStay/backend/node_modules/@prisma/client/runtime/library.js:121:6958)
+    at $n.handleAndLogRequestError (/Users/shivanshupadhayay/Desktop/BookMyStay/backend/node_modules/@prisma/client/runtime/library.js:121:6623)
+    at $n.request (/Users/shivanshupadhayay/Desktop/BookMyStay/backend/node_modules/@prisma/client/runtime/library.js:121:6307)
+    at async l (/Users/shivanshupadhayay/Desktop/BookMyStay/backend/node_modules/@prisma/client/runtime/library.js:130:9633)
+    at async createOrder (/Users/shivanshupadhayay/Desktop/BookMyStay/backend/src/controllers/paymentController.js:32:25)
+=========================
+
+[2025-12-26T17:36:49.714Z] POST /api/payments/create-order
+Headers: Auth header present
+
+=== CREATE ORDER REQUEST ===
+Request body: {}
+User: {
+  userId: '694cf213a887644ebc65c648',
+  role: 'CUSTOMER',
+  iat: 1766769377,
+  exp: 1767374177
+}
+===========================
+
+=== Create order error ===
+Error name: PrismaClientValidationError
+Error message: 
+Invalid `prisma.booking.findUnique()` invocation in
+/Users/shivanshupadhayay/Desktop/BookMyStay/backend/src/controllers/paymentController.js:32:46
+
+  29 const userId = req.user.userId;
+  30 
+  31 // Get booking details
+→ 32 const booking = await prisma.booking.findUnique({
+       where: {
+         id: undefined,
+     ?   AND?: BookingWhereInput | BookingWhereInput[],
+     ?   OR?: BookingWhereInput[],
+     ?   NOT?: BookingWhereInput | BookingWhereInput[],
+     ?   userId?: StringFilter | String,
+     ?   hotelId?: StringFilter | String,
+     ?   roomId?: StringFilter | String,
+     ?   checkIn?: DateTimeFilter | DateTime,
+     ?   checkOut?: DateTimeFilter | DateTime,
+     ?   status?: EnumBookingStatusFilter | BookingStatus,
+     ?   totalPrice?: FloatFilter | Float,
+     ?   paymentStatus?: EnumPaymentStatusFilter | PaymentStatus,
+     ?   razorpayOrderId?: StringNullableFilter | String | Null,
+     ?   razorpayPaymentId?: StringNullableFilter | String | Null,
+     ?   razorpaySignature?: StringNullableFilter | String | Null,
+     ?   paymentMethod?: StringNullableFilter | String | Null,
+     ?   paidAt?: DateTimeNullableFilter | DateTime | Null,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   user?: UserRelationFilter | UserWhereInput,
+     ?   hotel?: HotelRelationFilter | HotelWhereInput,
+     ?   room?: RoomRelationFilter | RoomWhereInput
+       },
+       include: {
+         hotel: true,
+         room: true,
+         user: true
+       }
+     })
+
+Argument `where` of type BookingWhereUniqueInput needs at least one of `id` arguments. Available options are marked with ?.
+Error stack: PrismaClientValidationError: 
+Invalid `prisma.booking.findUnique()` invocation in
+/Users/shivanshupadhayay/Desktop/BookMyStay/backend/src/controllers/paymentController.js:32:46
+
+  29 const userId = req.user.userId;
+  30 
+  31 // Get booking details
+→ 32 const booking = await prisma.booking.findUnique({
+       where: {
+         id: undefined,
+     ?   AND?: BookingWhereInput | BookingWhereInput[],
+     ?   OR?: BookingWhereInput[],
+     ?   NOT?: BookingWhereInput | BookingWhereInput[],
+     ?   userId?: StringFilter | String,
+     ?   hotelId?: StringFilter | String,
+     ?   roomId?: StringFilter | String,
+     ?   checkIn?: DateTimeFilter | DateTime,
+     ?   checkOut?: DateTimeFilter | DateTime,
+     ?   status?: EnumBookingStatusFilter | BookingStatus,
+     ?   totalPrice?: FloatFilter | Float,
+     ?   paymentStatus?: EnumPaymentStatusFilter | PaymentStatus,
+     ?   razorpayOrderId?: StringNullableFilter | String | Null,
+     ?   razorpayPaymentId?: StringNullableFilter | String | Null,
+     ?   razorpaySignature?: StringNullableFilter | String | Null,
+     ?   paymentMethod?: StringNullableFilter | String | Null,
+     ?   paidAt?: DateTimeNullableFilter | DateTime | Null,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   user?: UserRelationFilter | UserWhereInput,
+     ?   hotel?: HotelRelationFilter | HotelWhereInput,
+     ?   room?: RoomRelationFilter | RoomWhereInput
+       },
+       include: {
+         hotel: true,
+         room: true,
+         user: true
+       }
+     })
+
+Argument `where` of type BookingWhereUniqueInput needs at least one of `id` arguments. Available options are marked with ?.
+    at wn (/Users/shivanshupadhayay/Desktop/BookMyStay/backend/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at $n.handleRequestError (/Users/shivanshupadhayay/Desktop/BookMyStay/backend/node_modules/@prisma/client/runtime/library.js:121:6958)
+    at $n.handleAndLogRequestError (/Users/shivanshupadhayay/Desktop/BookMyStay/backend/node_modules/@prisma/client/runtime/library.js:121:6623)
+    at $n.request (/Users/shivanshupadhayay/Desktop/BookMyStay/backend/node_modules/@prisma/client/runtime/library.js:121:6307)
+    at async l (/Users/shivanshupadhayay/Desktop/BookMyStay/backend/node_modules/@prisma/client/runtime/library.js:130:9633)
+    at async createOrder (/Users/shivanshupadhayay/Desktop/BookMyStay/backend/src/controllers/paymentController.js:32:25)
+=========================
+
+[2025-12-26T17:40:43.730Z] POST /api/payments/create-order
+Headers: Auth header present
+
+=== CREATE ORDER REQUEST ===
+Request body: {}
+User: {
+  userId: '694cf213a887644ebc65c648',
+  role: 'CUSTOMER',
+  iat: 1766769377,
+  exp: 1767374177
+}
+===========================
+
+=== Create order error ===
+Error name: PrismaClientValidationError
+Error message: 
+Invalid `prisma.booking.findUnique()` invocation in
+/Users/shivanshupadhayay/Desktop/BookMyStay/backend/src/controllers/paymentController.js:32:46
+
+  29 const userId = req.user.userId;
+  30 
+  31 // Get booking details
+→ 32 const booking = await prisma.booking.findUnique({
+       where: {
+         id: undefined,
+     ?   AND?: BookingWhereInput | BookingWhereInput[],
+     ?   OR?: BookingWhereInput[],
+     ?   NOT?: BookingWhereInput | BookingWhereInput[],
+     ?   userId?: StringFilter | String,
+     ?   hotelId?: StringFilter | String,
+     ?   roomId?: StringFilter | String,
+     ?   checkIn?: DateTimeFilter | DateTime,
+     ?   checkOut?: DateTimeFilter | DateTime,
+     ?   status?: EnumBookingStatusFilter | BookingStatus,
+     ?   totalPrice?: FloatFilter | Float,
+     ?   paymentStatus?: EnumPaymentStatusFilter | PaymentStatus,
+     ?   razorpayOrderId?: StringNullableFilter | String | Null,
+     ?   razorpayPaymentId?: StringNullableFilter | String | Null,
+     ?   razorpaySignature?: StringNullableFilter | String | Null,
+     ?   paymentMethod?: StringNullableFilter | String | Null,
+     ?   paidAt?: DateTimeNullableFilter | DateTime | Null,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   user?: UserRelationFilter | UserWhereInput,
+     ?   hotel?: HotelRelationFilter | HotelWhereInput,
+     ?   room?: RoomRelationFilter | RoomWhereInput
+       },
+       include: {
+         hotel: true,
+         room: true,
+         user: true
+       }
+     })
+
+Argument `where` of type BookingWhereUniqueInput needs at least one of `id` arguments. Available options are marked with ?.
+Error stack: PrismaClientValidationError: 
+Invalid `prisma.booking.findUnique()` invocation in
+/Users/shivanshupadhayay/Desktop/BookMyStay/backend/src/controllers/paymentController.js:32:46
+
+  29 const userId = req.user.userId;
+  30 
+  31 // Get booking details
+→ 32 const booking = await prisma.booking.findUnique({
+       where: {
+         id: undefined,
+     ?   AND?: BookingWhereInput | BookingWhereInput[],
+     ?   OR?: BookingWhereInput[],
+     ?   NOT?: BookingWhereInput | BookingWhereInput[],
+     ?   userId?: StringFilter | String,
+     ?   hotelId?: StringFilter | String,
+     ?   roomId?: StringFilter | String,
+     ?   checkIn?: DateTimeFilter | DateTime,
+     ?   checkOut?: DateTimeFilter | DateTime,
+     ?   status?: EnumBookingStatusFilter | BookingStatus,
+     ?   totalPrice?: FloatFilter | Float,
+     ?   paymentStatus?: EnumPaymentStatusFilter | PaymentStatus,
+     ?   razorpayOrderId?: StringNullableFilter | String | Null,
+     ?   razorpayPaymentId?: StringNullableFilter | String | Null,
+     ?   razorpaySignature?: StringNullableFilter | String | Null,
+     ?   paymentMethod?: StringNullableFilter | String | Null,
+     ?   paidAt?: DateTimeNullableFilter | DateTime | Null,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   user?: UserRelationFilter | UserWhereInput,
+     ?   hotel?: HotelRelationFilter | HotelWhereInput,
+     ?   room?: RoomRelationFilter | RoomWhereInput
+       },
+       include: {
+         hotel: true,
+         room: true,
+         user: true
+       }
+     })
+
+Argument `where` of type BookingWhereUniqueInput needs at least one of `id` arguments. Available options are marked with ?.
+    at wn (/Users/shivanshupadhayay/Desktop/BookMyStay/backend/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at $n.handleRequestError (/Users/shivanshupadhayay/Desktop/BookMyStay/backend/node_modules/@prisma/client/runtime/library.js:121:6958)
+    at $n.handleAndLogRequestError (/Users/shivanshupadhayay/Desktop/BookMyStay/backend/node_modules/@prisma/client/runtime/library.js:121:6623)
+    at $n.request (/Users/shivanshupadhayay/Desktop/BookMyStay/backend/node_modules/@prisma/client/runtime/library.js:121:6307)
+    at async l (/Users/shivanshupadhayay/Desktop/BookMyStay/backend/node_modules/@prisma/client/runtime/library.js:130:9633)
+    at async createOrder (/Users/shivanshupadhayay/Desktop/BookMyStay/backend/src/controllers/paymentController.js:32:25)
+=========================
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Razorpay initialized with key: Key ID present
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Server running on port 5001
+[32m[nodemon] clean exit - waiting for changes before restart[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Razorpay initialized with key: Key ID present
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Server running on port 5001
+[32m[nodemon] clean exit - waiting for changes before restart[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Razorpay initialized with key: Key ID present
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Server running on port 5001
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Razorpay initialized with key: Key ID present
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+Server running on port 5001
+[32m[nodemon] clean exit - waiting for changes before restart[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Razorpay initialized with key: Key ID present
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+Server running on port 5001
+[32m[nodemon] clean exit - waiting for changes before restart[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Razorpay initialized with key: Key ID present
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Server running on port 5001
+[32m[nodemon] clean exit - waiting for changes before restart[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Razorpay initialized with key: Key ID present
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops
+Server running on port 5001
+
+[2025-12-26T18:10:46.909Z] POST /api/payments/create-order
+Headers: Auth header present
+
+=== CREATE ORDER REQUEST ===
+Request body: { bookingId: '694ecfa66c6bdd0a4d1cf8c5' }
+User: {
+  userId: '694cf213a887644ebc65c648',
+  role: 'CUSTOMER',
+  iat: 1766769377,
+  exp: 1767374177
+}
+===========================
+
+
+[2025-12-26T18:20:23.347Z] POST /api/payments/verify
+Headers: Auth header present
+
+[2025-12-26T18:25:19.486Z] POST /api/payments/create-order
+Headers: Auth header present
+
+=== CREATE ORDER REQUEST ===
+Request body: { bookingId: '694ed30f6c6bdd0a4d1cf8c6' }
+User: {
+  userId: '694cf213a887644ebc65c648',
+  role: 'CUSTOMER',
+  iat: 1766769377,
+  exp: 1767374177
+}
+===========================
+
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Razorpay initialized with key: Key ID present
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Server running on port 5001
+[32m[nodemon] clean exit - waiting for changes before restart[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Razorpay initialized with key: Key ID present
+/Users/shivanshupadhayay/Desktop/BookMyStay/backend/src/routes/bookingRoutes.js:22
+router.patch('/bookings/:id/cancel', authenticateToken, cancelBooking);
+                                                        ^
+
+ReferenceError: cancelBooking is not defined
+    at Object.<anonymous> (/Users/shivanshupadhayay/Desktop/BookMyStay/backend/src/routes/bookingRoutes.js:22:57)
+    at Module._compile (node:internal/modules/cjs/loader:1760:14)
+    at Object..js (node:internal/modules/cjs/loader:1892:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module._load (node:internal/modules/cjs/loader:1299:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.require (node:internal/modules/cjs/loader:1503:12)
+    at require (node:internal/modules/helpers:152:16)
+    at Object.<anonymous> (/Users/shivanshupadhayay/Desktop/BookMyStay/backend/src/routes/index.js:13:17)
+
+Node.js v25.2.0
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Razorpay initialized with key: Key ID present
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops
+Server running on port 5001
+[32m[nodemon] clean exit - waiting for changes before restart[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Razorpay initialized with key: Key ID present
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Server running on port 5001
+[32m[nodemon] clean exit - waiting for changes before restart[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Razorpay initialized with key: Key ID present
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Server running on port 5001
+[32m[nodemon] clean exit - waiting for changes before restart[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Razorpay initialized with key: Key ID present
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 📡 add observability to secrets: https://dotenvx.com/ops
+Server running on port 5001
+[32m[nodemon] clean exit - waiting for changes before restart[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Razorpay initialized with key: Key ID present
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+Server running on port 5001
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Razorpay initialized with key: Key ID present
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Server running on port 5001
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+Razorpay initialized with key: Key ID present
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+Server running on port 5001
+[32m[nodemon] clean exit - waiting for changes before restart[39m

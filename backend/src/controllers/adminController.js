@@ -37,13 +37,43 @@ const getAllUsers = async (req, res) => {
 const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
-        await prisma.user.delete({ where: { id } });
 
-        // Log it
-        await logAction(req.user.userId, 'USER_DELETED', `Deleted user ${id}`, id);
+        // Manual Cascade Deletion for MongoDB/Prisma
+        await prisma.$transaction(async (tx) => {
+            // 1. Delete all bookings made by the user
+            await tx.booking.deleteMany({ where: { userId: id } });
 
-        res.json({ message: 'User deleted successfully' });
+            // 2. Delete all saved hotel entries for the user
+            await tx.savedHotel.deleteMany({ where: { userId: id } });
+
+            // 3. Delete all audit logs where the user is the actor
+            await tx.auditLog.deleteMany({ where: { userId: id } });
+
+            // 4. Handle hotels owned by the user (if any)
+            const ownedHotels = await tx.hotel.findMany({ where: { ownerId: id }, select: { id: true } });
+            const ownedHotelIds = ownedHotels.map(h => h.id);
+
+            if (ownedHotelIds.length > 0) {
+                // Delete bookings for these hotels
+                await tx.booking.deleteMany({ where: { hotelId: { in: ownedHotelIds } } });
+                // Delete saved hotel entries for these hotels
+                await tx.savedHotel.deleteMany({ where: { hotelId: { in: ownedHotelIds } } });
+                // Delete rooms for these hotels
+                await tx.room.deleteMany({ where: { hotelId: { in: ownedHotelIds } } });
+                // Finally delete the hotels
+                await tx.hotel.deleteMany({ where: { ownerId: id } });
+            }
+
+            // 5. Finally delete the user
+            await tx.user.delete({ where: { id } });
+        });
+
+        // Log the admin action
+        await logAction(req.user.userId, 'USER_DELETED', `Deleted user ${id} and all related data`, id);
+
+        res.json({ message: 'User and all related data deleted successfully' });
     } catch (error) {
+        console.error("Delete User Error:", error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
@@ -157,4 +187,25 @@ const getAuditLogs = async (req, res) => {
     }
 };
 
-module.exports = { getStats, getAllUsers, deleteUser, getAllBookings, updateUserRole, getAnalytics, getAuditLogs };
+// Verify/Unverify Hotel
+const verifyHotel = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { isVerified } = req.body;
+
+        const updatedHotel = await prisma.hotel.update({
+            where: { id },
+            data: { isVerified },
+        });
+
+        // Log it
+        await logAction(req.user.userId, 'HOTEL_VERIFICATION_UPDATED', `Updated hotel ${updatedHotel.name} verification for ${id} to ${isVerified}`, id);
+
+        res.json({ message: `Hotel verification status updated to ${isVerified}`, hotel: updatedHotel });
+    } catch (error) {
+        console.error("Verify Hotel Error:", error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+module.exports = { getStats, getAllUsers, deleteUser, getAllBookings, updateUserRole, getAnalytics, getAuditLogs, verifyHotel };

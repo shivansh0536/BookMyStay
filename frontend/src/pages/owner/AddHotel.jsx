@@ -40,7 +40,7 @@ export default function AddHotel() {
     };
 
     return (
-        <div className="max-w-3xl mx-auto px-4 py-8">
+        <div className="max-w-3xl mx-auto px-4 pb-8 pt-24">
             <h1 className="text-2xl font-bold mb-8">List New Hotel</h1>
 
             <div className="bg-white shadow rounded-lg p-6">

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { getAdminStats, getAllUsers, deleteUser, getAllBookings, updateUserRole, getAdminAnalytics, getAuditLogs } from '../../services/adminService';
+import { getAdminStats, getAllUsers, deleteUser, getAllBookings, updateUserRole, getAdminAnalytics, getAuditLogs, verifyHotel } from '../../services/adminService';
 import { getAllHotels, deleteHotel } from '../../services/hotelService';
 import RevenueChart from '../../components/admin/RevenueChart';
 import { Button } from '../../components/ui/Button';
@@ -10,10 +10,10 @@ export default function AdminDashboard() {
     const [searchParams] = useSearchParams();
     const [stats, setStats] = useState({ users: 0, hotels: 0, bookings: 0 });
     const [analyticsData, setAnalyticsData] = useState([]);
-    const [auditLogs, setAuditLogs] = useState([]);
     const [users, setUsers] = useState([]);
     const [hotels, setHotels] = useState([]);
     const [bookings, setBookings] = useState([]);
+    const [auditLogs, setAuditLogs] = useState([]);
 
     // Default to 'analytics', or use URL param if present
     const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'analytics');
@@ -34,14 +34,14 @@ export default function AdminDashboard() {
             const [statsData, usersData, hotelsData, bookingsData, analytics, logs] = await Promise.all([
                 getAdminStats(),
                 getAllUsers(),
-                getAllHotels(),
+                getAllHotels({ limit: 100 }), // Fetch all hotels for management
                 getAllBookings(),
                 getAdminAnalytics(),
                 getAuditLogs()
             ]);
             setStats(statsData);
             setUsers(usersData);
-            setHotels(hotelsData);
+            setHotels(hotelsData.data || hotelsData); // Support both {data:[]} and plain []
             setBookings(bookingsData);
             setAnalyticsData(analytics);
             setAuditLogs(logs);
@@ -71,6 +71,16 @@ export default function AdminDashboard() {
         }
     };
 
+    const handleVerifyHotel = async (hotelId, currentStatus) => {
+        try {
+            const newStatus = !currentStatus;
+            await verifyHotel(hotelId, newStatus);
+            setHotels(hotels.map(h => h.id === hotelId ? { ...h, isVerified: newStatus } : h));
+        } catch (e) {
+            alert('Failed to update verification status');
+        }
+    };
+
     const handleDeleteHotel = async (id) => {
         if (!confirm('Are you sure you want to delete this hotel?')) return;
         try {
@@ -84,7 +94,7 @@ export default function AdminDashboard() {
     if (loading) return <div className="p-8 text-center">Loading...</div>;
 
     return (
-        <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="max-w-7xl mx-auto px-4 pb-8 pt-24">
             <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
 
             {/* Stats Cards */}
@@ -319,9 +329,15 @@ export default function AdminDashboard() {
                                             <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{hotel.name}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-gray-500">{hotel.city}</td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${hotel.isVerified ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                                                <button
+                                                    onClick={() => handleVerifyHotel(hotel.id, hotel.isVerified)}
+                                                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full transition-colors ${hotel.isVerified
+                                                        ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                                                        : 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
+                                                        }`}
+                                                >
                                                     {hotel.isVerified ? 'Yes' : 'No'}
-                                                </span>
+                                                </button>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                 <button onClick={() => handleDeleteHotel(hotel.id)} className="text-red-600 hover:text-red-900">

@@ -11,27 +11,39 @@ export default {
             },
             colors: {
                 brand: {
-                    50: '#eef2ff',
-                    100: '#e0e7ff',
-                    200: '#c7d2fe',
-                    300: '#a5b4fc',
-                    400: '#818cf8',
-                    500: '#6366f1',
-                    600: '#4f46e5', // Primary
-                    700: '#4338ca', // Hover
-                    800: '#3730a3',
-                    900: '#312e81',
+                    50: '#f0fdfa',
+                    100: '#ccfbf1',
+                    200: '#99f6e4',
+                    300: '#5eead4',
+                    400: '#2dd4bf',
+                    500: '#14b8a6',
+                    600: '#0d9488', // Teal 600 - Primary
+                    700: '#0f766e',
+                    800: '#115e59',
+                    900: '#134e4a',
                 },
                 accent: {
-                    50: '#ecfdf5',
-                    100: '#d1fae5',
-                    500: '#10b981', // Success/Verification
-                    600: '#059669',
-                },
+                    50: '#fff1f2',
+                    100: '#ffe4e6',
+                    200: '#fecdd3',
+                    300: '#fda4af',
+                    400: '#fb7185',
+                    500: '#f43f5e', // Rose 500 - Secondary/Action
+                    600: '#e11d48',
+                    700: '#be123c',
+                    800: '#9f1239',
+                    900: '#881337',
+                }
             },
             borderRadius: {
                 'xl': '0.75rem',
                 '2xl': '1rem',
+                '3xl': '1.5rem',
+                'pill': '9999px',
+            },
+            boxShadow: {
+                'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                'hover': '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
             }
         },
     },

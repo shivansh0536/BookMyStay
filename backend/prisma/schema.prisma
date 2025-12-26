@@ -20,6 +20,13 @@ enum BookingStatus {
   COMPLETED
 }
 
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
+}
+
 model User {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   email     String   @unique
@@ -32,6 +39,7 @@ model User {
   bookings  Booking[]
   hotels    Hotel[]   // Only relevant if OWNER
   auditLogs AuditLog[] @relation("UserAuditLogs")
+  savedHotels SavedHotel[]
 }
 
 model Hotel {
@@ -49,6 +57,7 @@ model Hotel {
 
   rooms       Room[]
   bookings    Booking[] // Access bookings directly via Hotel
+  savedBy     SavedHotel[]
 }
 
 model Room {
@@ -78,6 +87,14 @@ model Booking {
   status    BookingStatus @default(PENDING)
   totalPrice Float
   
+  // Payment fields for Razorpay
+  paymentStatus     PaymentStatus @default(PENDING)
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  razorpaySignature String?
+  paymentMethod     String?
+  paidAt            DateTime?
+  
   createdAt DateTime      @default(now())
 
   @@index([roomId, checkIn, checkOut])
@@ -93,4 +110,15 @@ model AuditLog {
   createdAt DateTime @default(now())
 
   @@index([createdAt])
+}
+
+model SavedHotel {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  hotelId   String   @db.ObjectId
+  hotel     Hotel    @relation(fields: [hotelId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, hotelId])
 }

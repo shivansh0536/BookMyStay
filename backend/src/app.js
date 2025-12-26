@@ -13,6 +13,15 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
+// Request logging for debugging
+app.use((req, res, next) => {
+    if (req.path.includes('/payments/')) {
+        console.log(`\n[${new Date().toISOString()}] ${req.method} ${req.path}`);
+        console.log('Headers:', req.headers.authorization ? 'Auth header present' : 'No auth header');
+    }
+    next();
+});
+
 // Routes
 app.use('/api', routes);
 

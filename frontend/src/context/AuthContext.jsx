@@ -46,13 +46,27 @@ export const AuthProvider = ({ children }) => {
         return data;
     };
 
+    const updatePassword = async (currentPassword, newPassword) => {
+        const { data } = await api.patch('/auth/me/password', { currentPassword, newPassword });
+        return data;
+    };
+
     const logout = () => {
         localStorage.removeItem('token');
         setUser(null);
     };
 
+    const refreshUser = async () => {
+        try {
+            const { data } = await api.get('/auth/me');
+            setUser(data);
+        } catch (error) {
+            console.error("Failed to refresh user", error);
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ user, login, register, logout, updateProfile, loading }}>
+        <AuthContext.Provider value={{ user, login, register, logout, updateProfile, updatePassword, refreshUser, loading }}>
             {!loading && children}
         </AuthContext.Provider>
     );

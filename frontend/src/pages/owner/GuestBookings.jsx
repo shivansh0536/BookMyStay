@@ -24,7 +24,7 @@ export default function GuestBookings() {
     if (loading) return <div className="p-8 text-center">Loading...</div>;
 
     return (
-        <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="max-w-7xl mx-auto px-4 pb-8 pt-24">
             <h1 className="text-2xl font-bold mb-6">Guest Bookings</h1>
             <p className="text-gray-600 mb-8">View all customers who have booked your properties.</p>
 

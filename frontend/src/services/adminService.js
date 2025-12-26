@@ -34,3 +34,8 @@ export const deleteUser = async (id) => {
     const { data } = await api.delete(`/admin/users/${id}`);
     return data;
 };
+
+export const verifyHotel = async (hotelId, isVerified) => {
+    const { data } = await api.patch(`/admin/hotels/${hotelId}/verify`, { isVerified });
+    return data;
+};

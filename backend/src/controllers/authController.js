@@ -95,7 +95,8 @@ const login = async (req, res) => {
 const getMe = async (req, res) => {
     try {
         const user = await prisma.user.findUnique({
-            where: { id: req.user.userId }
+            where: { id: req.user.userId },
+            include: { savedHotels: true }
         });
 
         if (!user) return res.status(404).json({ message: "User not found" });
@@ -134,9 +135,46 @@ const updateProfile = async (req, res) => {
     }
 };
 
+const updatePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ message: "Current and new passwords are required" });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({ message: "New password must be at least 6 characters" });
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { id: req.user.userId }
+        });
+
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        const isMatch = await comparePassword(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Incorrect current password" });
+        }
+
+        const hashedPassword = await hashPassword(newPassword);
+        await prisma.user.update({
+            where: { id: req.user.userId },
+            data: { password: hashedPassword }
+        });
+
+        res.json({ message: "Password updated successfully" });
+    } catch (error) {
+        console.error('Update password error:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
 module.exports = {
     register,
     login,
     getMe,
-    updateProfile
+    updateProfile,
+    updatePassword
 };

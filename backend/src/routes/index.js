@@ -8,7 +8,8 @@ const router = express.Router();
 router.use('/auth', authRoutes);
 router.use('/admin', adminRoutes);
 router.use('/hotels', require('./hotelRoutes'));
-
+router.use('/users', require('./userRoutes'));
+router.use('/payments', require('./paymentRoutes'));
 router.use('/', require('./bookingRoutes')); // Mounted at root as it defines its own paths
 
 

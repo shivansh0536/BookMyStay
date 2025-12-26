@@ -1,19 +1,29 @@
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { motion } from 'framer-motion';
 
-export function Button({ className, variant = 'primary', ...props }) {
+export function Button({ className, variant = 'primary', size = 'md', ...props }) {
     const variants = {
-        primary: 'bg-blue-600 text-white hover:bg-blue-700',
-        secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300',
-        outline: 'border border-gray-300 text-gray-700 hover:bg-gray-50',
-        ghost: 'text-gray-600 hover:bg-gray-100',
+        primary: 'bg-teal-600 text-white hover:bg-teal-700 shadow-md hover:shadow-lg',
+        secondary: 'bg-rose-500 text-white hover:bg-rose-600 shadow-md hover:shadow-lg', // Rose
+        outline: 'border-2 border-slate-200 text-slate-700 hover:border-teal-600 hover:text-teal-600 bg-white shadow-sm hover:shadow-md',
+        ghost: 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
+    };
+
+    const sizes = {
+        sm: 'px-4 py-1.5 text-sm',
+        md: 'px-6 py-2.5 text-base',
+        lg: 'px-8 py-3.5 text-lg',
     };
 
     return (
-        <button
+        <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.96 }}
             className={twMerge(
-                'px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
+                'rounded-full font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2',
                 variants[variant],
+                sizes[size],
                 className
             )}
             {...props}

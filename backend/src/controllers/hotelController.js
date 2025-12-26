@@ -83,13 +83,21 @@ const getAllHotels = async (req, res) => {
             if (maxPrice && hotel.startPrice > parseFloat(maxPrice)) return false;
 
             // Amenities Filter (AND logic: must have all selected)
-            if (amenities) {
-                const requiredAmenities = amenities.split(',').map(a => a.trim().toLowerCase());
-                const hotelAmenities = (hotel.amenities || []).map(a => a.toLowerCase());
-                const hasAll = requiredAmenities.every(req =>
-                    hotelAmenities.some(av => av.includes(req))
-                );
-                if (!hasAll) return false;
+            if (amenities && amenities.length > 0) {
+                let requiredAmenities = [];
+                if (Array.isArray(amenities)) {
+                    requiredAmenities = amenities.map(a => a.trim().toLowerCase());
+                } else if (typeof amenities === 'string') {
+                    requiredAmenities = amenities.split(',').map(a => a.trim().toLowerCase());
+                }
+
+                if (requiredAmenities.length > 0) {
+                    const hotelAmenities = (hotel.amenities || []).map(a => a.toLowerCase());
+                    const hasAll = requiredAmenities.every(req =>
+                        hotelAmenities.some(av => av.includes(req))
+                    );
+                    if (!hasAll) return false;
+                }
             }
 
             // Must have rooms (optional, but good for UX)
@@ -106,13 +114,28 @@ const getAllHotels = async (req, res) => {
         }
         // 'newest' is default from DB fetch, but good to keep if re-sorting needed
 
-        // 5. Pagination (Slice)
-        const take = limit ? parseInt(limit) : hotels.length;
-        const result = hotels.slice(0, take);
+        // 5. Pagination
+        const page = parseInt(req.query.page) || 1;
+        const limitInt = parseInt(limit) || 10;
+        const startIndex = (page - 1) * limitInt;
 
-        res.json(result);
+        const total = hotels.length;
+        const totalPages = Math.ceil(total / limitInt);
+
+        const paginatedHotels = hotels.slice(startIndex, startIndex + limitInt);
+
+        res.json({
+            data: paginatedHotels,
+            pagination: {
+                total,
+                page,
+                totalPages,
+                hasMinPrice: !!minPrice,
+                hasMaxPrice: !!maxPrice
+            }
+        });
     } catch (error) {
-        console.error(error);
+        console.error("Filter Error:", error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
@@ -169,10 +192,24 @@ const deleteHotel = async (req, res) => {
             return res.status(403).json({ message: 'Not authorized to delete this hotel' });
         }
 
-        await prisma.hotel.delete({ where: { id } });
+        // Manual Cascade Deletion
+        await prisma.$transaction(async (tx) => {
+            // 1. Delete all bookings for this hotel
+            await tx.booking.deleteMany({ where: { hotelId: id } });
 
-        res.json({ message: 'Hotel deleted successfully' });
+            // 2. Delete all saved entries for this hotel
+            await tx.savedHotel.deleteMany({ where: { hotelId: id } });
+
+            // 3. Delete all rooms for this hotel
+            await tx.room.deleteMany({ where: { hotelId: id } });
+
+            // 4. Finally delete the hotel
+            await tx.hotel.delete({ where: { id } });
+        });
+
+        res.json({ message: 'Hotel and all related data deleted successfully' });
     } catch (error) {
+        console.error("Delete Hotel Error:", error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
