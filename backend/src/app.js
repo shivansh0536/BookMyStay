@@ -7,7 +7,11 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: [
+        process.env.FRONTEND_URL,
+        'http://localhost:5173',
+        'https://book-my-stay-sigma.vercel.app' // Fallback for the current deployment
+    ].filter(Boolean),
     credentials: true
 }));
 app.use(express.json());
