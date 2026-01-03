@@ -64,13 +64,13 @@ export default function Explore() {
         setLoading(true);
         try {
             const filters = {
-                city: debouncedSearch,
+                search: debouncedSearch,
                 minPrice: priceRange[0],
                 maxPrice: priceRange[1] < 1000 ? priceRange[1] : undefined,
                 amenities: selectedAmenities,
                 limit: 12, // Consistent grid limit
                 page: page,
-                sortBy: sortBy === 'newest' ? 'createdAt' : 'price',
+                sortBy: sortBy === 'priceAsc' || sortBy === 'priceDesc' ? 'price' : sortBy,
                 order: sortBy === 'priceAsc' ? 'asc' : 'desc'
             };
             const response = await getAllHotels(filters);
@@ -227,6 +227,8 @@ export default function Explore() {
                                     className="bg-transparent text-sm font-semibold outline-none cursor-pointer"
                                 >
                                     <option value="newest">Featured</option>
+                                    <option value="best-value">Best Value ✨</option>
+                                    <option value="rating">Top Rated</option>
                                     <option value="priceAsc">Price: Low to High</option>
                                     <option value="priceDesc">Price: High to Low</option>
                                 </select>

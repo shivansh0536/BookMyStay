@@ -23,36 +23,6 @@ BookMyStay supports three distinct user roles:
 - Admin Dashboard with Analytics and Audit Logs
 - Wishlist functionality for Customers
 
-## Installation
-
-### Prerequisites
-- Node.js (v16+)
-- MongoDB Atlas account (or local MongoDB)
-- Razorpay API Keys (for payments)
-
-### Steps
-1. **Clone the repository**:
-   ```bash
-   git clone <repository-url>
-   cd BookMyStay
-   ```
-
-2. **Backend Setup**:
-   ```bash
-   cd backend
-   npm install
-   # Create a .env file based on .env.example
-   npx prisma generate
-   npm run dev
-   ```
-
-3. **Frontend Setup**:
-   ```bash
-   cd frontend
-   npm install
-   # Create a .env file based on .env.example
-   npm run dev
-   ```
 
 ## API Documentation
 

@@ -53,6 +53,8 @@ model Hotel {
   amenities   String[]
   images      String[]
   isVerified  Boolean  @default(false)
+  rating      Float    @default(0)
+  reviewCount Int      @default(0)
   createdAt   DateTime @default(now())
 
   rooms       Room[]

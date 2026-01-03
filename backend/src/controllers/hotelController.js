@@ -48,20 +48,17 @@ const getMyHotels = async (req, res) => {
 
 const getAllHotels = async (req, res) => {
     try {
-        const { city, minPrice, maxPrice, amenities, sortBy, order, limit } = req.query;
+        const { city, minPrice, maxPrice, amenities, sortBy, order, limit, search } = req.query;
 
-        // 1. Build DB Query
+        // 1. Build DB Query (Base filters)
         const where = {};
-        if (city) {
-            where.OR = [
-                { city: { contains: city, mode: 'insensitive' } },
-                { name: { contains: city, mode: 'insensitive' } }, // Search by name too
-                { address: { contains: city, mode: 'insensitive' } }
-            ];
+
+        // If searching without fuzzy or for specific city
+        if (city && !search) {
+            where.city = { contains: city, mode: 'insensitive' };
         }
 
-        // 2. Fetch all matching hotels with Rooms to calculate price
-        // Note: For large datasets, we would aggregate or use raw query. For <1000 items, in-memory is fast.
+        // 2. Fetch hotels with Rooms
         let hotels = await prisma.hotel.findMany({
             where,
             include: {
@@ -72,56 +69,76 @@ const getAllHotels = async (req, res) => {
             orderBy: { createdAt: 'desc' }
         });
 
-        // 3. Process & Filter In-Memory
+        // 3. Process & Filter
         hotels = hotels.map(hotel => {
             const prices = hotel.rooms.map(r => r.pricePerNight);
             const startPrice = prices.length > 0 ? Math.min(...prices) : 0;
-            return { ...hotel, startPrice, roomCount: hotel.rooms.length };
-        }).filter(hotel => {
-            // Price Filter
+            return {
+                ...hotel,
+                startPrice,
+                roomCount: hotel.rooms.length,
+                // Ensure rating exists for sorting
+                rating: hotel.rating || 0
+            };
+        });
+
+        // 4. Fuzzy Search (if search query provided)
+        if (search) {
+            const Fuse = require('fuse.js');
+            const fuse = new Fuse(hotels, {
+                keys: ['name', 'city', 'description'],
+                threshold: 0.3,
+                distance: 100
+            });
+            hotels = fuse.search(search).map(result => result.item);
+        }
+
+        // 5. Secondary Filtering (Price & Amenities)
+        hotels = hotels.filter(hotel => {
             if (minPrice && hotel.startPrice < parseFloat(minPrice)) return false;
             if (maxPrice && hotel.startPrice > parseFloat(maxPrice)) return false;
 
-            // Amenities Filter (AND logic: must have all selected)
             if (amenities && amenities.length > 0) {
-                let requiredAmenities = [];
-                if (Array.isArray(amenities)) {
-                    requiredAmenities = amenities.map(a => a.trim().toLowerCase());
-                } else if (typeof amenities === 'string') {
-                    requiredAmenities = amenities.split(',').map(a => a.trim().toLowerCase());
-                }
+                let requiredAmenities = Array.isArray(amenities) ? amenities : [amenities];
+                requiredAmenities = requiredAmenities.map(a => a.trim().toLowerCase());
 
-                if (requiredAmenities.length > 0) {
-                    const hotelAmenities = (hotel.amenities || []).map(a => a.toLowerCase());
-                    const hasAll = requiredAmenities.every(req =>
-                        hotelAmenities.some(av => av.includes(req))
-                    );
-                    if (!hasAll) return false;
-                }
+                const hotelAmenities = (hotel.amenities || []).map(a => a.toLowerCase());
+                const hasAll = requiredAmenities.every(req =>
+                    hotelAmenities.some(av => av.includes(req))
+                );
+                if (!hasAll) return false;
             }
-
-            // Must have rooms (optional, but good for UX)
-            // if (hotel.roomCount === 0) return false; 
-
             return true;
         });
 
-        // 4. Sorting
-        if (sortBy === 'price') {
+        // 6. Advanced Sorting
+        if (sortBy === 'best-value') {
+            // "Best Value" Calculation: High Rating + Low Price
+            // Normalize values for comparison
+            const maxPriceVal = Math.max(...hotels.map(h => h.startPrice), 1);
+            const minPriceVal = Math.min(...hotels.map(h => h.startPrice), 0);
+
+            hotels.sort((a, b) => {
+                const getScore = (h) => {
+                    const priceScore = maxPriceVal === minPriceVal ? 100 : 100 - ((h.startPrice - minPriceVal) / (maxPriceVal - minPriceVal) * 100);
+                    const ratingScore = (h.rating / 5) * 100;
+                    return (ratingScore * 0.7) + (priceScore * 0.3); // 70% weight on rating, 30% on price
+                };
+                return getScore(b) - getScore(a);
+            });
+        } else if (sortBy === 'price') {
             hotels.sort((a, b) => {
                 return order === 'asc' ? a.startPrice - b.startPrice : b.startPrice - a.startPrice;
             });
+        } else if (sortBy === 'rating') {
+            hotels.sort((a, b) => b.rating - a.rating);
         }
-        // 'newest' is default from DB fetch, but good to keep if re-sorting needed
 
-        // 5. Pagination
+        // 7. Pagination
         const page = parseInt(req.query.page) || 1;
         const limitInt = parseInt(limit) || 10;
         const startIndex = (page - 1) * limitInt;
-
         const total = hotels.length;
-        const totalPages = Math.ceil(total / limitInt);
-
         const paginatedHotels = hotels.slice(startIndex, startIndex + limitInt);
 
         res.json({
@@ -129,9 +146,7 @@ const getAllHotels = async (req, res) => {
             pagination: {
                 total,
                 page,
-                totalPages,
-                hasMinPrice: !!minPrice,
-                hasMaxPrice: !!maxPrice
+                totalPages: Math.ceil(total / limitInt)
             }
         });
     } catch (error) {
