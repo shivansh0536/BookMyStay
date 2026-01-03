@@ -65,8 +65,8 @@ export function HotelCard({ hotel, isOwner = false }) {
                     <div className="absolute top-3 right-3">
                         <button
                             className={`p-2 rounded-full backdrop-blur-md transition-colors ${isLiked
-                                    ? 'bg-white text-rose-500'
-                                    : 'bg-white/10 hover:bg-white/20 text-white'
+                                ? 'bg-white text-rose-500'
+                                : 'bg-white/10 hover:bg-white/20 text-white'
                                 }`}
                             onClick={handleLike}
                         >
@@ -90,7 +90,7 @@ export function HotelCard({ hotel, isOwner = false }) {
                             </h3>
                             <div className="flex items-center gap-1 text-sm font-medium">
                                 <Star className="h-3 w-3 fill-slate-900" />
-                                <span>4.92</span>
+                                <span>{hotel.rating > 0 ? hotel.rating.toFixed(1) : 'New'}</span>
                             </div>
                         </div>
 

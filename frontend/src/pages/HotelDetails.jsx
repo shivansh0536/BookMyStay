@@ -69,8 +69,8 @@ export default function HotelDetails() {
                     <h1 className="text-3xl font-bold text-slate-900 mb-2">{hotel.name}</h1>
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-4 text-sm font-medium text-slate-900">
-                            <span className="flex items-center gap-1"><Star className="h-4 w-4 fill-slate-900" /> 4.92</span>
-                            <span className="underline cursor-pointer">128 reviews</span>
+                            <span className="flex items-center gap-1"><Star className="h-4 w-4 fill-slate-900" /> {hotel.rating > 0 ? hotel.rating.toFixed(1) : 'New'}</span>
+                            <span className="underline cursor-pointer">{hotel.reviewCount || 0} reviews</span>
                             <span className="text-slate-500">•</span>
                             <span className="text-slate-500 underline cursor-pointer">{hotel.city}, {hotel.address}</span>
                         </div>
@@ -248,8 +248,8 @@ export default function HotelDetails() {
                                     </div>
                                     <div className="flex items-center gap-1 text-sm font-bold text-slate-900">
                                         <Star className="h-3 w-3 fill-slate-900" />
-                                        <span>4.92</span>
-                                        <span className="text-slate-400 font-normal">reviews</span>
+                                        <span>{hotel.rating > 0 ? hotel.rating.toFixed(1) : 'New'}</span>
+                                        <span className="text-slate-400 font-normal">({hotel.reviewCount || 0} reviews)</span>
                                     </div>
                                 </div>
 
